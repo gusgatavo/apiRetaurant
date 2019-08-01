@@ -1,61 +1,58 @@
 package cl.prueba.tecnica.seguridad;
 
+import static cl.prueba.tecnica.seguridad.Constants.HEADER_AUTHORIZACION_KEY;
+import static cl.prueba.tecnica.seguridad.Constants.SUPER_SECRET_KEY;
+import static cl.prueba.tecnica.seguridad.Constants.TOKEN_BEARER_PREFIX;
+
 import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 
-public class JWTAuthorizationFilter extends OncePerRequestFilter {
+public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
-	private final String HEADER = "";
-	private final String PREFIX = "";
-	private final String SECRET = "";
+	public JWTAuthorizationFilter(AuthenticationManager authManager) {
+		super(authManager);
+	}
 
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-			throws ServletException, IOException {
-		if (existeJWTToken(request, response)) {
-			Claims claims = validateToken(request);
-			if(claims.get("authorities")!=null) {
-				setUpSpringAuthentication(claims);
-			}else {
-				SecurityContextHolder.clearContext();
-			}
+	protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
+			throws IOException, ServletException {
+		String header = req.getHeader(HEADER_AUTHORIZACION_KEY);
+		if (header == null || !header.startsWith(TOKEN_BEARER_PREFIX)) {
+			chain.doFilter(req, res);
+			return;
 		}
+		UsernamePasswordAuthenticationToken authentication = getAuthentication(req);
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+		chain.doFilter(req, res);
 	}
 
-	private Claims validateToken(HttpServletRequest request) {
-		String jwtToken = request.getHeader(HEADER).replace(PREFIX, "");
-		return Jwts.parser().setSigningKey(SECRET.getBytes()).parseClaimsJws(jwtToken).getBody();
-	}
-	
-	private void setUpSpringAuthentication(Claims claims) {
-		@SuppressWarnings("unchecked")
-		List authorities = (List) claims.get("authorities");
+	private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
+		String token = request.getHeader(HEADER_AUTHORIZACION_KEY);
+		if (token != null) {
+			// Se procesa el token y se recupera el usuario.
+			String user = Jwts.parser()
+						.setSigningKey(SUPER_SECRET_KEY)
+						.parseClaimsJws(token.replace(TOKEN_BEARER_PREFIX, ""))
+						.getBody()
+						.getSubject();
 
-		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(claims.getSubject(), null,
-				authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
-		SecurityContextHolder.getContext().setAuthentication(auth);
-		
+			if (user != null) {
+				return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
+			}
+			return null;
+		}
+		return null;
 	}
-
-	private boolean existeJWTToken(HttpServletRequest request, HttpServletResponse response) {
-		String authenticationHeader = request.getHeader(HEADER);
-		if (authenticationHeader == null || !authenticationHeader.startsWith(PREFIX))
-			return false;
-		return true;
-	}
-
 }

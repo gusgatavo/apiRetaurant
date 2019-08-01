@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,9 +23,9 @@ public class UsuarioController {
 	private UsuarioDao usuarioDao;
 	
 	@PostMapping("/login")
-	public Usuario login(@RequestBody Usuario usuario) {
+	public UserDetails login(@RequestBody Usuario usuario) {
 		LOG.info("Se esta ejecutnaod Login");
-		Usuario user = usuarioDao.login(usuario);		
+		UserDetails user = usuarioDao.login(usuario);		
 		return user;
 	}
 	
