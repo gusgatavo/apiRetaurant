@@ -11,6 +11,7 @@ public class Usuario implements Serializable {
 
 	private Integer idUsuairo;
 	private String nameUsuario;
+	private String userUsuario;
 	private String pwsUsuario;
 	private Integer perfilUsuario;
 	private String token;
@@ -29,6 +30,14 @@ public class Usuario implements Serializable {
 
 	public void setNameUsuario(String nameUsuario) {
 		this.nameUsuario = nameUsuario;
+	}
+
+	public String getUserUsuario() {
+		return userUsuario;
+	}
+
+	public void setUserUsuario(String userUsuario) {
+		this.userUsuario = userUsuario;
 	}
 
 	public String getPwsUsuario() {
