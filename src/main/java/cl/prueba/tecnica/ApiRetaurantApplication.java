@@ -24,7 +24,6 @@ public class ApiRetaurantApplication {
 
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
-			System.out.println("url"+http.toString());
 			http.csrf().disable()
 					.addFilterAfter(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
 					.authorizeRequests()

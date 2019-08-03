@@ -23,8 +23,8 @@ public class UsuarioDaoImpl implements UsuarioDao {
 	@Override
 	public Usuario login(Usuario usuario) {
 		LOG.info("Se esta ejecutando login");
-		if("user".equals(usuario.getNameUsuario()) && "1234".equals(usuario.getPwsUsuario())) {
-			String token = getJWTToken(usuario.getNameUsuario());
+		if("user".equals(usuario.getUserUsuario()) && "1234".equals(usuario.getPwsUsuario())) {
+			String token = getJWTToken(usuario);
 			usuario.setToken(token);
 			usuario.setPwsUsuario("");
 		}else {
@@ -34,7 +34,7 @@ public class UsuarioDaoImpl implements UsuarioDao {
 	}
 	
 	
-	private String getJWTToken(String username) {
+	private String getJWTToken(Usuario usuario) {
 		String secretKey = "mySecretKey";
 		List<GrantedAuthority> grantedAuthorities = AuthorityUtils
 				.commaSeparatedStringToAuthorityList("ROLE_USER");
@@ -42,15 +42,14 @@ public class UsuarioDaoImpl implements UsuarioDao {
 		String token = Jwts
 				.builder()
 				.setId("softtekJWT")
-				.setSubject(username)
+				.setSubject(usuario.getNameUsuario())
+				.setSubject(usuario.getUserUsuario())
+				.setSubject(usuario.getPwsUsuario())
 				.claim("authorities",
-						grantedAuthorities.stream()
-								.map(GrantedAuthority::getAuthority)
-								.collect(Collectors.toList()))
+						grantedAuthorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
 				.setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + 600000))
-				.signWith(SignatureAlgorithm.HS512,
-						secretKey.getBytes()).compact();
+				.signWith(SignatureAlgorithm.HS512, secretKey.getBytes()).compact();
 
 		return "Bearer " + token;
 	}
