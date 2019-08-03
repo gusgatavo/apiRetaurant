@@ -1,4 +1,7 @@
 # apiRetaurant
+## Ejecutar Proyecto.
+Desde la raiz de proyecto se tiene que ejecutar *mvn spring-boot:run*.
+
 ## Métodos expuestos
 
 ### Login
