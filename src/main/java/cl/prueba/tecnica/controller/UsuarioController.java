@@ -23,7 +23,6 @@ public class UsuarioController {
 	@PostMapping("login")
 	public Usuario login(@RequestBody Usuario usuario) {
 		LOG.info("Se esta ejecutnaod Login");
-		Usuario user = usuarioDao.login(usuario);
-		return user;
+		return usuarioDao.login(usuario);
 	}
 }

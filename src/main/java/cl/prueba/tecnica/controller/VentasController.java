@@ -45,9 +45,9 @@ public class VentasController {
 		return ventaDao.getVentasActivas();
 	}
 
-	@GetMapping("/getVentasDia/{dia}")
-	public List<Venta> getVentasDia(@PathVariable Date dia){
-		return ventaDao.getVentasDia(dia);
+	@PostMapping("/getVentasDia")
+	public List<Venta> getVentasDia(@RequestBody Venta venta){
+		return ventaDao.getVentasDia(venta.getFechaVenta());
 	}
 }
 

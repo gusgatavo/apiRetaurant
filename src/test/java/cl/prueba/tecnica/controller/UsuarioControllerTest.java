@@ -30,11 +30,13 @@ public class UsuarioControllerTest {
 		usuario.setToken(
 				"Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoidXNlciIsImF1dGhvcml0aWVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE1NjQ3MTkyODIsImV4cCI6MTU2NDcxOTg4Mn0.lvDfLx59WIA54ecgkmN1OcVi5GakZS-QdYTK56Y1OsVf8oDjdrvM_thXegDT9hwcAXKLUH2LGLLYt8-7XwOO6A");
 		usuario.setUserUsuario("user");
-		
+
 		Mockito.when(dao.login(usuario)).thenReturn(usuario);
-		
-		Assert.assertEquals(controller.login(usuario).getUserUsuario(), "user");
-		
+
+		Usuario user = controller.login(usuario);
+
+		Assert.assertEquals("user", user.getNameUsuario());
+
 	}
 
 }

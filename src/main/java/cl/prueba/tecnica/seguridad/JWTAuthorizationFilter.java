@@ -22,15 +22,15 @@ import io.jsonwebtoken.UnsupportedJwtException;
 
 public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
-	private final String HEADER = "Authorization";
-	private final String PREFIX = "Bearer ";
-	private final String SECRET = "mySecretKey";
+	private static final String HEADER = "Authorization";
+	private static final String PREFIX = "Bearer ";
+	private static final String SECRET = "mySecretKey";
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 		try {
-			if (existeJWTToken(request, response)) {
+			if (existeJWTToken(request)) {
 				Claims claims = validateToken(request);
 				if (claims.get("authorities") != null) {
 					setUpSpringAuthentication(claims);
@@ -41,7 +41,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 			filterChain.doFilter(request, response);
 		} catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException e) {
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-			((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+			(response).sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 			return;
 		}
 	}
@@ -66,11 +66,13 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
 	}
 
-	private boolean existeJWTToken(HttpServletRequest request, HttpServletResponse res) {
+	private boolean existeJWTToken(HttpServletRequest request) {
 		String authenticationHeader = request.getHeader(HEADER);
-		if (authenticationHeader == null || !authenticationHeader.startsWith(PREFIX))
+		if (authenticationHeader == null || !authenticationHeader.startsWith(PREFIX)) {
 			return false;
-		return true;
+		} else {
+			return true;
+		}
 	}
 
 }

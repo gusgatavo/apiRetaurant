@@ -57,7 +57,7 @@ public class VentasControllerTest {
 		List<Venta> lstVentas = new ArrayList<>();
 		lstVentas.add(getVenta());
 		Mockito.when(dao.getVentasDia(Mockito.any())).thenReturn(lstVentas);
-		Assert.assertNotNull(controller.getVentasDia(new Date()));
+		Assert.assertNotNull(controller.getVentasDia(getVenta()));
 	}
 
 	private Venta getVenta() {

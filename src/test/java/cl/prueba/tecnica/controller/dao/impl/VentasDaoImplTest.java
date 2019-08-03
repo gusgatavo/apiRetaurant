@@ -19,42 +19,41 @@ public class VentasDaoImplTest {
 
 	@InjectMocks
 	private VentasDaoImpl daoImpl;
-	
+
 	@Test
 	public void doVentaTest() {
-		Assert.assertEquals(daoImpl.doVenta(getVenta()).getDescricion(), "Venta registrada Correctamente");
+		Assert.assertEquals("Venta registrada Correctamente", daoImpl.doVenta(getVenta()).getDescricion());
 	}
-	
+
 	@Test
 	public void endVentaTest() {
-		Assert.assertEquals(daoImpl.endVenta(1).getDescricion(), "Se realizo la asignación del id Boleta a la venta");
+		Assert.assertEquals("Se realizo la asignación del id Boleta a la venta", daoImpl.endVenta(1).getDescricion());
 	}
-	
+
 	@Test
 	public void getVentaTest() {
 		Assert.assertNotNull(daoImpl.getVenta(1));
 	}
-	
+
 	@Test
 	public void getVentasActivasTest() {
 		Assert.assertNotNull(daoImpl.getVentasActivas());
 	}
-	
-	
+
 	private Venta getVenta() {
 		Venta venta = new Venta();
 		venta.setBoleta(0);
-		
+
 		DetalleVenta detalleVenta = new DetalleVenta();
 		detalleVenta.setCantidad(1);
 		detalleVenta.setIdDetalleVenta(1);
 		detalleVenta.setIdProducto(1);
 		detalleVenta.setTotal(1);
 		detalleVenta.setValorUnitario(100);
-		
+
 		List<DetalleVenta> lstDetalleVenta = new ArrayList<>();
 		lstDetalleVenta.add(detalleVenta);
-		
+
 		venta.setDetalleVenta(lstDetalleVenta);
 		venta.setFechaVenta(new Date());
 		venta.setIdMesa(1);

@@ -21,9 +21,9 @@ public class VentasDaoImpl implements VentasDao {
 		respuestaRest.setDescricion("Venta registrada Correctamente");
 		return respuestaRest;
 	}
-	
+
 	public RespuestaRest endVenta(Integer idVenta) {
-		Integer boleta = getBoleta();
+		//Se rescatara el número de la boleta
 		RespuestaRest respuestaRest = new RespuestaRest();
 		respuestaRest.setCodido(200);
 		respuestaRest.setDescricion("Se realizo la asignación del id Boleta a la venta");
@@ -57,7 +57,7 @@ public class VentasDaoImpl implements VentasDao {
 		List<Venta> list = getVentass();
 
 		for (Venta venta : list) {
-			if (venta.getIdVenta() == idVenta) {
+			if (venta.getIdVenta().equals(idVenta)) {
 				return venta;
 			}
 		}
@@ -66,9 +66,10 @@ public class VentasDaoImpl implements VentasDao {
 	}
 
 	private List<Venta> getVentass() {
-		List<Venta> list = new ArrayList<Venta>();
+		List<Venta> list = new ArrayList<>();
 
 		Venta v1 = new Venta();
+		v1.setIdVenta(1);
 		v1.setBoleta(0);
 		DetalleVenta dt1V1 = new DetalleVenta();
 		dt1V1.setCantidad(1);
@@ -84,7 +85,7 @@ public class VentasDaoImpl implements VentasDao {
 		dt2V1.setTotal(1000);
 		dt2V1.setValorUnitario(1000);
 
-		List<DetalleVenta> detalleVentas = new ArrayList<DetalleVenta>();
+		List<DetalleVenta> detalleVentas = new ArrayList<>();
 		detalleVentas.add(dt1V1);
 		detalleVentas.add(dt2V1);
 
@@ -96,6 +97,7 @@ public class VentasDaoImpl implements VentasDao {
 		v1.setTotalVenta(10000);
 
 		Venta v2 = new Venta();
+		v2.setIdVenta(2);
 		v2.setBoleta(0);
 		DetalleVenta dt1V2 = new DetalleVenta();
 		dt1V2.setCantidad(1);
@@ -111,7 +113,7 @@ public class VentasDaoImpl implements VentasDao {
 		dt2V2.setTotal(1000);
 		dt2V2.setValorUnitario(1000);
 
-		List<DetalleVenta> detalleVentas2 = new ArrayList<DetalleVenta>();
+		List<DetalleVenta> detalleVentas2 = new ArrayList<>();
 		detalleVentas2.add(dt1V2);
 		detalleVentas2.add(dt2V2);
 
@@ -127,19 +129,18 @@ public class VentasDaoImpl implements VentasDao {
 
 		return list;
 	}
-	
-	private List<Venta> getVentasDias(Date dia){
+
+	private List<Venta> getVentasDias(Date dia) {
 		List<Venta> list = getVentass();
 		int boleta = 1;
 		for (Venta venta : list) {
-			venta.setBoleta(boleta);
+			if (venta.getFechaVenta().equals(dia)) {
+				venta.setBoleta(boleta);
+				list.add(venta);
+			}
 			boleta++;
 		}
 		return list;
-	}
-	
-	private Integer getBoleta() {
-		return 11001;
 	}
 
 }
