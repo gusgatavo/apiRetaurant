@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 import cl.prueba.tecnica.dao.UsuarioDao;
 import cl.prueba.tecnica.dto.Usuario;
 
+
+/**
+* Gustavo Vergara
+**/
 @RestController
 public class UsuarioController {
 
